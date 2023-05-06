@@ -17,17 +17,26 @@ public class FileService {
         String linha = reader.readLine();
         while(linha != null) {
             String[] record = linha.split(";");
-            if(!relationships.containsKey(record[0])){
-                relationships.put(record[0], record[1]);
+            if(isNumeric(record[0])){
+                if(!relationships.containsKey(record[0])){
+                    relationships.put(record[0], record[1]);
+                }
+            } else {
+                if(!relationships.containsKey(record[1])){
+                    relationships.put(record[1], record[0]);
+                }
             }
             linha = reader.readLine();
         }
         reader.close();
     }
 
+    private boolean isNumeric(String record){
+        return record.matches( "\\d+");
+    }
+
     private void writeFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(pathSaida));
-
         relationships.keySet().forEach(k -> {
             try {
                 writer.write(k + ";" + relationships.get(k) + "\n");
