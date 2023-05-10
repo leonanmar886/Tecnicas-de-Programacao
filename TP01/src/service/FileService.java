@@ -1,19 +1,21 @@
 package service;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class FileService {
 
     private HashMap<String, String> relationships = new HashMap<>(); //aqui vão ficar armazenados os cpf's e os nomes
 
-    private String pathEntrada; //caminho do meu arquivo de entrada
+    private String pathSaida; //caminho do meu arquivo de entrada
 
-    private String pathSaida; //caminho do meu arquivo de saída
+    private List<String> pathEntrada = new ArrayList<>(); //caminho do meu arquivo de saída
 
-    private void readFile() throws IOException { //aqui temos esse throws pois a classe FileReader precisa dele
+    private void readFile(String pathArquivoEntrada) throws IOException { //aqui temos esse throws pois a classe FileReader precisa dele
 
-        BufferedReader reader = new BufferedReader(new FileReader(pathEntrada));//aqui basicamente a gente cria um objeto da classe BufferedReader que é capaz de ler linha a linha os registros do nosso arquivo de entrada
+        BufferedReader reader = new BufferedReader(new FileReader(pathArquivoEntrada));//aqui basicamente a gente cria um objeto da classe BufferedReader que é capaz de ler linha a linha os registros do nosso arquivo de entrada
 
         String linha = reader.readLine();//método do nosso objeto que retorna uma linha do nosso arquivo
         while(linha != null) {//quando lermos todas as linhas do arquivo, essa variável linha vai ter o valor null. Então esse while se mantém enquanto temos linhas para ler
@@ -40,9 +42,9 @@ public class FileService {
         BufferedWriter writer = new BufferedWriter(new FileWriter(pathSaida)); //assim como no método de leitura, aqui a gente cria um objeto da classe BufferedWriter que é capaz de escrever no nosso aquivo
         //aqui é a parte mais complicadinha de entender, mas dá pra pegar. O que é feito é que eu pego todas as chaves do nosso HashMap, que no caso são os CPFs,
         //através desse método "keySet", e depois pra cada uma desssas chaves, eu vou usar meu objeto pra escrever no arquivo de saída.
-        relationships.keySet().forEach(k -> {
+        relationships.keySet().forEach(cpf -> {
             try {
-                writer.write(k + ";" + relationships.get(k) + "\n");//aqui é onde de fato é escrito no arquivo, esse "k" corresponde ao cpf, e o relationships.get(k) vai retornar o nome associado aquele cpf.
+                writer.write(cpf + ";" + relationships.get(cpf) + "\n");//aqui é onde de fato é escrito no arquivo, esse "k" corresponde ao cpf, e o relationships.get(k) vai retornar o nome associado aquele cpf.
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -64,11 +66,17 @@ public class FileService {
     }
 
     public void buildRelationship() throws IOException {
-        readFile();
+        pathEntrada.forEach(p -> {
+            try {
+                readFile(p);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         writeFile();
     }
 
-    public FileService(String pathEntrada, String pathSaida){ //Método construtor da classe.
+    public FileService(String pathSaida, List<String> pathEntrada){ //Método construtor da classe.
         this.pathSaida = pathSaida;
         this.pathEntrada = pathEntrada;
     }
