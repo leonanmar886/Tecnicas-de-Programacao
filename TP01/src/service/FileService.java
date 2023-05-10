@@ -9,9 +9,9 @@ public class FileService {
 
     private HashMap<String, String> relationships = new HashMap<>(); //aqui vão ficar armazenados os cpf's e os nomes
 
-    private String pathSaida; //caminho do meu arquivo de entrada
+    private String pathSaida; //caminho do meu arquivo de saída
 
-    private List<String> pathEntrada = new ArrayList<>(); //caminho do meu arquivo de saída
+    private List<String> pathEntrada = new ArrayList<>(); //caminho do meu arquivo de entrada
 
     private void readFile(String pathArquivoEntrada) throws IOException { //aqui temos esse throws pois a classe FileReader precisa dele
 
